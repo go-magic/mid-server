@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"mid-server/register"
-	"mid-server/schedule"
-	"mid-server/task"
 	"net/http"
 	"testing"
+
+	"github.com/go-magic/mid-server/register"
+	"github.com/go-magic/mid-server/schedule"
+	"github.com/go-magic/mid-server/task"
 )
 
 type HttpTask struct {

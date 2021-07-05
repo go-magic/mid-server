@@ -3,10 +3,11 @@ package schedule
 import (
 	"context"
 	"errors"
-	"mid-server/register"
-	"mid-server/task"
 	"net/http"
 	"sync"
+
+	"github.com/go-magic/mid-server/register"
+	"github.com/go-magic/mid-server/task"
 )
 
 const (

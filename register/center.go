@@ -2,7 +2,8 @@ package register
 
 import (
 	"context"
-	"mid-server/task"
+
+	"github.com/go-magic/mid-server/task"
 )
 
 type taskTypeFactory struct {

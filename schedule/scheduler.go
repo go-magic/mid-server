@@ -2,7 +2,8 @@ package schedule
 
 import (
 	"context"
-	"mid-server/task"
+
+	"github.com/go-magic/mid-server/task"
 )
 
 type Scheduler interface {
