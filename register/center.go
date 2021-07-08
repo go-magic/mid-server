@@ -77,6 +77,10 @@ func (r registerCenter) Tasker(ctx context.Context, taskType string) task.Tasker
 
 func (r registerCenter) sendTasker(taskType string) {
 	factory := r.center[taskType]
+	if factory == nil {
+		r.sendTaskerChan <- nil
+		return
+	}
 	r.sendTaskerChan <- factory()
 }
 
