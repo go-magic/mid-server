@@ -64,7 +64,7 @@ func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Res
 	group.Add(len(subTasks))
 	for _, subTask := range subTasks {
 		s.waitGoRoutine()
-		go s.check(subTask, resultChan)
+		go s.checkResults(subTask, resultChan)
 	}
 	go func() {
 		group.Wait()
@@ -85,7 +85,7 @@ func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Res
 	}
 }
 
-func (s schedule) check(subTask task.Task, resultChan chan checkResult) {
+func (s schedule) checkResults(subTask task.Task, resultChan chan checkResult) {
 	t := s.register.Tasker(context.Background(), subTask.TaskType)
 	if t == nil {
 		resultChan <- checkResult{
@@ -94,14 +94,14 @@ func (s schedule) check(subTask task.Task, resultChan chan checkResult) {
 		}
 		return
 	}
-	result, err := s.checkByTemplate(&subTask, t)
+	result, err := s.Check(&subTask, t)
 	resultChan <- checkResult{
 		Result: result,
 		E:      err,
 	}
 }
 
-func (s schedule) checkByTemplate(task *task.Task, tasker task.Tasker) (*task.Result, error) {
+func (s schedule) Check(task *task.Task, tasker task.Tasker) (*task.Result, error) {
 	subResult, checkErr := tasker.Check(task)
 	if checkErr != nil {
 		return s.errorResult(task, checkErr.Error()), checkErr
