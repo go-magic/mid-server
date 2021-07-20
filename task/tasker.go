@@ -1,6 +1,7 @@
 package task
 
-type Tasker interface {
-	Check(task *Task) (subResult string, err error)
-}
+type TaskerFactory func() Tasker
 
+type Tasker interface {
+	Check(task *Task) (result *Result, err error)
+}
