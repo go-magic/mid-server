@@ -3,9 +3,9 @@ package schedule
 import (
 	"context"
 	"errors"
-	"github.com/go-magic/mid-server/dispatcher"
 	"sync"
 
+	"github.com/go-magic/mid-server/dispatcher"
 	"github.com/go-magic/mid-server/register"
 	"github.com/go-magic/mid-server/task"
 )
@@ -58,8 +58,4 @@ func (s schedule) checkResults(subTasks []task.Task, resultChan chan task.CheckR
 		requestChan := task.CreateCheckRequest(&subTasks[i], resultChan, tasker)
 		s.dis.AddCheckRequest(requestChan)
 	}
-}
-
-func (s schedule) Check(task *task.Task, tasker task.Tasker) (*task.Result, error) {
-	return tasker.Check(task)
 }

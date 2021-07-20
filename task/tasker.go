@@ -3,5 +3,5 @@ package task
 type TaskerFactory func() Tasker
 
 type Tasker interface {
-	Check(task *Task) (result *Result, err error)
+	Check(subTask string) (subResult string, err error)
 }

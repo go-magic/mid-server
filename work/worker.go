@@ -2,6 +2,7 @@ package work
 
 import (
 	"errors"
+
 	"github.com/go-magic/mid-server/task"
 )
 
@@ -39,11 +40,24 @@ func (w Worker) start() {
 
 func (w Worker) check(request task.CheckRequest) {
 	if request.Tasker == nil {
-		request.CheckResultChan <- task.CheckResult{SubResult: nil, Error: errors.New("tasker not exist")}
+		request.CheckResultChan <- task.CheckResult{
+			SubResult: task.ErrorResult(request.SubTask, "taskType not exist"),
+			Error:     errors.New("tasker not exist"),
+		}
 		return
 	}
-	result, err := request.Tasker.Check(request.SubTask)
-	request.CheckResultChan <- task.CheckResult{SubResult: result, Error: err}
+	result, err := request.Tasker.Check(request.SubTask.SubTask)
+	if err != nil {
+		request.CheckResultChan <- task.CheckResult{
+			SubResult: task.ErrorResult(request.SubTask, err.Error()),
+			Error:     err,
+		}
+		return
+	}
+	request.CheckResultChan <- task.CheckResult{
+		SubResult: task.SuccessResult(request.SubTask, result),
+		Error:     err,
+	}
 }
 
 func (w Worker) Stop() {

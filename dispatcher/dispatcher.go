@@ -16,7 +16,13 @@ type Dispatcher struct {
 func NewDispatcher(maxWorkers int) *Dispatcher {
 	pool := make(chan chan task.CheckRequest, maxWorkers)
 	exit := make(chan struct{})
-	return &Dispatcher{workerPool: pool, maxWorkers: maxWorkers, exitChan: exit}
+	checkRequestQueue := make(chan task.CheckRequest)
+	return &Dispatcher{
+		workerPool:        pool,
+		maxWorkers:        maxWorkers,
+		exitChan:          exit,
+		checkRequestQueue: checkRequestQueue,
+	}
 }
 
 func (d *Dispatcher) Run() {

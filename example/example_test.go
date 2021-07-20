@@ -21,17 +21,15 @@ type HttpResult struct {
 }
 
 type HttpServer struct {
-	task    *task.Task
 	subTask HttpTask
 }
 
-func (h *HttpServer) parse(task *task.Task) error {
-	h.task = task
-	return json.Unmarshal([]byte(task.SubTask), &h.subTask)
+func (h *HttpServer) parse(subTask string) error {
+	return json.Unmarshal([]byte(subTask), &h.subTask)
 }
 
-func (h *HttpServer) Check(task *task.Task) (string, error) {
-	err := h.parse(task)
+func (h *HttpServer) Check(subTask string) (string, error) {
+	err := h.parse(subTask)
 	if err != nil {
 		return "", err
 	}
@@ -72,7 +70,7 @@ func initTasks() []task.Task {
 func TestNewServer(t *testing.T) {
 	center := register.NewRegisterCenter()
 	center.Register("http_get", NewHttpGet)
-	sch := schedule.NewSchedule(100, center)
+	sch := schedule.NewSchedule(1, center)
 	subResult, err := sch.Execute(context.Background(), initTasks())
 	if err != nil {
 		t.Fatal(err)

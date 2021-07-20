@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	CHECK_ERROR = 1000
+	CHECK_ERROR         = 1000
+	CHECK_TIMEOUT_ERROR = 1001
 )
 
 type ServerResult struct {
@@ -23,6 +24,7 @@ type Result struct {
 	SubResultCode int    `json:"code"`
 	SubResult     string `json:"result"`
 	SubTaskID     string `json:"sub_task_id"`
+	Task          Task   `json:"task"`
 	Error         string `json:"error"`
 }
 
@@ -31,6 +33,7 @@ func NewResult(task *Task) *Result {
 		TaskType:      task.TaskType,
 		SubResultCode: CHECK_ERROR,
 		SubTaskID:     task.SubTaskID,
+		Task:          *task,
 	}
 }
 

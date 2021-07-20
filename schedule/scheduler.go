@@ -8,5 +8,4 @@ import (
 
 type Scheduler interface {
 	Execute(context.Context, []task.Task) ([]task.Result, error)
-	Check(task *task.Task, tasker task.Tasker) (*task.Result, error)
 }
