@@ -59,3 +59,8 @@ func (s schedule) checkResults(subTasks []task.Task, resultChan chan task.CheckR
 		s.dis.AddCheckRequest(requestChan)
 	}
 }
+
+func (s schedule) Exit() {
+	go s.register.Exit()
+	go s.dis.Exit()
+}

@@ -8,4 +8,5 @@ import (
 
 type Scheduler interface {
 	Execute(context.Context, []task.Task) ([]task.Result, error)
+	Exit()
 }
