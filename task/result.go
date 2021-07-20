@@ -20,12 +20,12 @@ type ServerResult struct {
 }
 
 type Result struct {
-	TaskType      string `json:"task_type"`
 	SubResultCode int    `json:"code"`
+	TaskType      string `json:"task_type"`
 	SubResult     string `json:"result"`
 	SubTaskID     string `json:"sub_task_id"`
-	Task          Task   `json:"task"`
 	Error         string `json:"error"`
+	Task          Task   `json:"task"`
 }
 
 func NewResult(task *Task) *Result {

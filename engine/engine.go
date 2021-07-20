@@ -11,8 +11,8 @@ import (
 )
 
 type Engine struct {
-	scheduler schedule.Scheduler
 	config    Config
+	scheduler schedule.Scheduler
 	exit      chan struct{}
 }
 

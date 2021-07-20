@@ -6,11 +6,11 @@ import (
 )
 
 type Dispatcher struct {
+	maxWorkers        int
 	workerPool        chan chan task.CheckRequest
 	checkRequestQueue chan task.CheckRequest
-	maxWorkers        int
-	workers           []work.Worker
 	exitChan          chan struct{}
+	workers           []work.Worker
 }
 
 func NewDispatcher(maxWorkers int) *Dispatcher {

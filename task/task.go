@@ -4,8 +4,8 @@ type ServerTask struct {
 	Code    int    `json:"code"`
 	Status  string `json:"status"`
 	Message string `json:"message"`
-	Tasks   []Task `json:"tasks"`
 	TaskID  string `json:"task_id"`
+	Tasks   []Task `json:"tasks"`
 }
 
 // Task subTask
