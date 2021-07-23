@@ -108,3 +108,8 @@ func (e *Engine) execute(serverTask *task.ServerTask) (*task.ServerResult, error
 	serverResult.Results = results
 	return serverResult, nil
 }
+
+func (e *Engine) Exit() {
+	e.scheduler.Exit()
+	e.exit <- struct{}{}
+}
