@@ -78,7 +78,9 @@ func (e *Engine) startServer() error {
 	}
 	result, executeErr := e.execute(serverTask)
 	if executeErr != nil {
-		return executeErr
+		if result != nil {
+			result.Error = executeErr.Error()
+		}
 	}
 	return e.config.Consumer.DestroyServerResult(result)
 }
