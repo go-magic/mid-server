@@ -26,7 +26,6 @@ type Result struct {
 	SubResult     string `json:"result"`
 	SubTaskID     string `json:"sub_task_id"`
 	Error         string `json:"error"`
-	Task          Task   `json:"task"`
 }
 
 func NewResult(task *Task) *Result {
@@ -34,7 +33,6 @@ func NewResult(task *Task) *Result {
 		TaskType:      task.TaskType,
 		SubResultCode: CHECK_ERROR,
 		SubTaskID:     task.SubTaskID,
-		Task:          *task,
 	}
 }
 
