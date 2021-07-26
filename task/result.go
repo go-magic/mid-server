@@ -22,7 +22,7 @@ type ServerResult struct {
 
 type Result struct {
 	SubResultCode int    `json:"code"`
-	TaskType      string `json:"task_type"`
+	TaskType      int `json:"task_type"`
 	SubResult     string `json:"result"`
 	SubTaskID     string `json:"sub_task_id"`
 	Error         string `json:"error"`
