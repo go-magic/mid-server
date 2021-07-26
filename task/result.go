@@ -34,6 +34,7 @@ func NewResult(task *Task) *Result {
 		TaskType:      task.TaskType,
 		SubResultCode: CHECK_ERROR,
 		SubTaskID:     task.SubTaskID,
+		SubTask:       task.SubTask,
 	}
 }
 
