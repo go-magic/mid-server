@@ -42,6 +42,7 @@ func NewGatewayResult(task *ServerTask) *ServerResult {
 	result := &ServerResult{
 		StatusCode: http.StatusOK,
 		ExecTime:   time.Now().Format("2006-01-02 15:04:05"),
+		Tasks:      task.Tasks,
 	}
 	result.TaskID = task.TaskID
 	return result
