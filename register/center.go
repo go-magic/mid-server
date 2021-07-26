@@ -7,25 +7,25 @@ import (
 )
 
 type taskTypeFactory struct {
-	taskType string
+	taskType int
 	factory  Factory
 }
 
 type registerCenter struct {
-	center           map[string]Factory
+	center           map[int]Factory
 	registerChan     chan taskTypeFactory
-	cancellationChan chan string
-	getTaskerChan    chan string
+	cancellationChan chan int
+	getTaskerChan    chan int
 	sendTaskerChan   chan task.Tasker
 	exist            chan struct{}
 }
 
 func NewRegisterCenter() *registerCenter {
 	r := &registerCenter{}
-	r.center = make(map[string]Factory)
+	r.center = make(map[int]Factory)
 	r.registerChan = make(chan taskTypeFactory)
-	r.cancellationChan = make(chan string)
-	r.getTaskerChan = make(chan string)
+	r.cancellationChan = make(chan int)
+	r.getTaskerChan = make(chan int)
 	r.sendTaskerChan = make(chan task.Tasker)
 	r.exist = make(chan struct{})
 	go r.start()
@@ -47,7 +47,7 @@ func (r registerCenter) start() {
 	}
 }
 
-func (r registerCenter) Register(taskType string, factory Factory) {
+func (r registerCenter) Register(taskType int, factory Factory) {
 	r.registerChan <- taskTypeFactory{taskType: taskType, factory: factory}
 }
 
@@ -55,15 +55,15 @@ func (r registerCenter) register(msg taskTypeFactory) {
 	r.center[msg.taskType] = msg.factory
 }
 
-func (r registerCenter) UnRegister(taskType string) {
+func (r registerCenter) UnRegister(taskType int) {
 	r.cancellationChan <- taskType
 }
 
-func (r registerCenter) unRegister(taskType string) {
+func (r registerCenter) unRegister(taskType int) {
 	delete(r.center, taskType)
 }
 
-func (r registerCenter) Tasker(ctx context.Context, taskType string) task.Tasker {
+func (r registerCenter) Tasker(ctx context.Context, taskType int) task.Tasker {
 	r.getTaskerChan <- taskType
 	for {
 		select {
@@ -75,7 +75,7 @@ func (r registerCenter) Tasker(ctx context.Context, taskType string) task.Tasker
 	}
 }
 
-func (r registerCenter) sendTasker(taskType string) {
+func (r registerCenter) sendTasker(taskType int) {
 	factory := r.center[taskType]
 	if factory == nil {
 		r.sendTaskerChan <- nil

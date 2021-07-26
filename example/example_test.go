@@ -62,14 +62,14 @@ func initTasks() []task.Task {
 	}
 	subTask.SubTaskID = "1"
 	subTask.SubTask = string(b)
-	subTask.TaskType = "http_get"
+	subTask.TaskType = 1
 	tasks = append(tasks, subTask)
 	return tasks
 }
 
 func TestNewServer(t *testing.T) {
 	center := register.NewRegisterCenter()
-	center.Register("http_get", NewHttpGet)
+	center.Register(1, NewHttpGet)
 	sch := schedule.NewSchedule(1, center)
 	subResult, err := sch.Execute(context.Background(), initTasks())
 	if err != nil {

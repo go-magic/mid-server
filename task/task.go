@@ -10,7 +10,7 @@ type ServerTask struct {
 
 // Task subTask
 type Task struct {
-	TaskType  string `json:"task_type"`
+	TaskType  int `json:"task_type"`
 	SubTask   string `json:"sub_task"`
 	SubTaskID string `json:"sub_task_id"`
 }

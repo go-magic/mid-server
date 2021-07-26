@@ -9,8 +9,8 @@ import (
 type Factory func() task.Tasker
 
 type Register interface {
-	Register(string, Factory)
-	UnRegister(string)
-	Tasker(ctx context.Context, taskType string) task.Tasker
+	Register(int, Factory)
+	UnRegister(int)
+	Tasker(ctx context.Context, taskType int) task.Tasker
 	Exit()
 }

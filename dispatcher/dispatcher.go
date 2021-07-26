@@ -40,7 +40,7 @@ func (d *Dispatcher) dispatch() {
 		case request := <-d.checkRequestQueue:
 			go d.addCheckRequest(request)
 		case <-d.exitChan:
-
+			return
 		}
 	}
 }
