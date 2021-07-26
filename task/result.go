@@ -13,6 +13,7 @@ const (
 type ServerResult struct {
 	StatusCode int      `json:"status_code"`
 	Results    []Result `json:"results"`
+	Tasks      []Task   `json:"tasks"`
 	TaskID     string   `json:"task_id"`
 	Error      string   `json:"error"`
 	ExecTime   string   `json:"exec_time"`
