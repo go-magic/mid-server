@@ -9,14 +9,17 @@ import (
 type Worker struct {
 	WorkerPool     chan chan task.CheckRequest
 	requestChannel chan task.CheckRequest
-	quit           chan bool
+	exit           chan bool
 }
 
+/*
+NewWorker workerPool返回空闲的任务队列
+*/
 func NewWorker(workerPool chan chan task.CheckRequest) Worker {
 	return Worker{
 		WorkerPool:     workerPool,
 		requestChannel: make(chan task.CheckRequest),
-		quit:           make(chan bool)}
+		exit:           make(chan bool)}
 }
 
 func (w Worker) Start() {
@@ -31,13 +34,16 @@ func (w Worker) start() {
 		case request := <-w.requestChannel:
 			// 接收到一个工作请求
 			w.check(request)
-		case <-w.quit:
+		case <-w.exit:
 			// 接收到停止工作信号
 			return
 		}
 	}
 }
 
+/*
+任务执行实体
+*/
 func (w Worker) check(request task.CheckRequest) {
 	if request.Tasker == nil {
 		request.CheckResultChan <- task.CheckResult{
@@ -60,8 +66,11 @@ func (w Worker) check(request task.CheckRequest) {
 	}
 }
 
-func (w Worker) Stop() {
+/*
+Exit 退出
+*/
+func (w Worker) Exit() {
 	go func() {
-		w.quit <- true
+		w.exit <- true
 	}()
 }

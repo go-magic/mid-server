@@ -10,21 +10,25 @@ import (
 	"github.com/go-magic/mid-server/task"
 )
 
+/*
+调度实体
+*/
 type schedule struct {
 	register register.Register
 	//限流
-	dis *dispatcher.Dispatcher
+	dis dispatcher.Dispatcher
 }
 
-func NewSchedule(maxGoRoutine int, r register.Register) *schedule {
+func NewSchedule(r register.Register, dis dispatcher.Dispatcher) *schedule {
 	if r == nil {
 		return nil
 	}
-	dis := dispatcher.NewDispatcher(maxGoRoutine)
+	if dis == nil {
+		dis = &dispatcher.Dispatch{}
+	}
 	s := &schedule{}
 	s.dis = dis
 	s.register = r
-	dis.Run()
 	return s
 }
 
@@ -55,8 +59,7 @@ func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Res
 func (s schedule) checkResults(subTasks []task.Task, resultChan chan task.CheckResult) {
 	for i, subTask := range subTasks {
 		tasker := s.register.Tasker(context.Background(), subTask.TaskType)
-		requestChan := task.CreateCheckRequest(&subTasks[i], resultChan, tasker)
-		s.dis.AddCheckRequest(requestChan)
+		s.dis.AddExecuteTasker(tasker, &subTasks[i], resultChan)
 	}
 }
 

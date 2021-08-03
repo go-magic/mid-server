@@ -34,10 +34,16 @@ func NewEngine() *Engine {
 	}
 }
 
+/*
+SetScheduler 设置调度
+*/
 func (e *Engine) SetScheduler(scheduler schedule.Scheduler) {
 	e.scheduler = scheduler
 }
 
+/*
+SetConfig 设置engine配置文件
+*/
 func (e *Engine) SetConfig(config Config) {
 	e.config = config
 }
@@ -53,6 +59,9 @@ func (e *Engine) start() {
 	}
 }
 
+/*
+初始化engine
+*/
 func (e *Engine) init() error {
 	if e.scheduler == nil ||
 		e.config.Producer == nil ||
@@ -71,6 +80,9 @@ func (e *Engine) init() error {
 	return nil
 }
 
+/*
+开启服务
+*/
 func (e *Engine) startServer() error {
 	serverTask, err := e.config.Producer.CreateServerTask()
 	if err != nil {
@@ -85,7 +97,10 @@ func (e *Engine) startServer() error {
 	return e.config.Consumer.DestroyServerResult(result)
 }
 
-func (e *Engine) Run() error {
+/*
+Start 开始服务
+*/
+func (e *Engine) Start() error {
 	if err := e.init(); err != nil {
 		return err
 	}
@@ -98,8 +113,11 @@ func (e *Engine) Run() error {
 	}
 }
 
+/*
+调度执行多任务实例
+*/
 func (e *Engine) execute(serverTask *task.ServerTask) (*task.ServerResult, error) {
-	serverResult := task.NewGatewayResult(serverTask)
+	serverResult := task.NewServerResult(serverTask)
 	ctx, _ := context.WithTimeout(context.Background(), e.config.ExecuteTime)
 	results, err := e.scheduler.Execute(ctx, serverTask.Tasks)
 	if err != nil {
@@ -109,6 +127,9 @@ func (e *Engine) execute(serverTask *task.ServerTask) (*task.ServerResult, error
 	return serverResult, nil
 }
 
+/*
+Exit 退出
+*/
 func (e *Engine) Exit() {
 	e.scheduler.Exit()
 	e.exit <- struct{}{}

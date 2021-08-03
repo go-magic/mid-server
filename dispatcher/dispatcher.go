@@ -5,7 +5,7 @@ import (
 	"github.com/go-magic/mid-server/work"
 )
 
-type Dispatcher struct {
+type Dispatch struct {
 	maxWorkers        int
 	workerPool        chan chan task.CheckRequest
 	checkRequestQueue chan task.CheckRequest
@@ -13,19 +13,21 @@ type Dispatcher struct {
 	workers           []work.Worker
 }
 
-func NewDispatcher(maxWorkers int) *Dispatcher {
+func NewDispatcher(maxWorkers int) *Dispatch {
 	pool := make(chan chan task.CheckRequest, maxWorkers)
 	exit := make(chan struct{})
 	checkRequestQueue := make(chan task.CheckRequest)
-	return &Dispatcher{
+	d := &Dispatch{
 		workerPool:        pool,
 		maxWorkers:        maxWorkers,
 		exitChan:          exit,
 		checkRequestQueue: checkRequestQueue,
 	}
+	d.start()
+	return d
 }
 
-func (d *Dispatcher) Run() {
+func (d *Dispatch) start() {
 	for i := 0; i < d.maxWorkers; i++ {
 		worker := work.NewWorker(d.workerPool)
 		worker.Start()
@@ -34,7 +36,7 @@ func (d *Dispatcher) Run() {
 	go d.dispatch()
 }
 
-func (d *Dispatcher) dispatch() {
+func (d *Dispatch) dispatch() {
 	for {
 		select {
 		case request := <-d.checkRequestQueue:
@@ -45,21 +47,21 @@ func (d *Dispatcher) dispatch() {
 	}
 }
 
-func (d *Dispatcher) AddCheckRequest(request task.CheckRequest) {
-	d.checkRequestQueue <- request
+func (d *Dispatch) AddExecuteTasker(tasker task.Tasker, subTask *task.Task, ch chan task.CheckResult) {
+	d.checkRequestQueue <- task.CheckRequest{SubTask: subTask, Tasker: tasker, CheckResultChan: ch}
 }
 
-func (d *Dispatcher) addCheckRequest(request task.CheckRequest) {
+func (d *Dispatch) addCheckRequest(request task.CheckRequest) {
 	subTaskChannel := <-d.workerPool
 	subTaskChannel <- request
 }
 
-func (d *Dispatcher) Exit() {
+func (d *Dispatch) Exit() {
 	d.exitChan <- struct{}{}
 }
 
-func (d *Dispatcher) exit() {
+func (d *Dispatch) exit() {
 	for _, worker := range d.workers {
-		worker.Stop()
+		worker.Exit()
 	}
 }
