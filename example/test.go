@@ -36,6 +36,9 @@ func NewServerTask() *task.ServerTask {
 	return &serverTask
 }
 
+/*
+CreateServerTask 生产任务
+*/
 func (c Create) CreateServerTask() (*task.ServerTask, error) {
 	return NewServerTask(), nil
 }
@@ -47,6 +50,9 @@ func NewDestroy() *Destroy {
 	return &Destroy{}
 }
 
+/*
+DestroyServerResult 消费任务
+*/
 func (d Destroy) DestroyServerResult(result *task.ServerResult) error {
 	log.Println("执行完毕", result)
 	return nil
@@ -76,10 +82,16 @@ func initEngine(scheduler schedule.Scheduler) error {
 	return nil
 }
 
+/*
+初始化调度
+*/
 func initScheduler(register register.Register, maxRoutine int) schedule.Scheduler {
 	return schedule.NewSchedule(register, dispatcher.NewDispatcher(maxRoutine))
 }
 
+/*
+注册中心
+*/
 func initRegister() register.Register {
 	r := register.NewRegisterCenter()
 	r.Register(MSG_HTTP_TASK, NewHttpServer)
