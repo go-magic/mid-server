@@ -122,10 +122,7 @@ func (e *Engine) execute(serverTask *task.ServerTask) (*task.ServerResult, error
 	ctx, _ := context.WithTimeout(context.Background(), e.config.ExecuteTime)
 	results, err := e.scheduler.Execute(ctx, serverTask.Tasks)
 	serverResult.Results = results
-	if err != nil {
-		return serverResult, err
-	}
-	return serverResult, nil
+	return serverResult, err
 }
 
 /*
