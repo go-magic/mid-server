@@ -121,10 +121,10 @@ func (e *Engine) execute(serverTask *task.ServerTask) (*task.ServerResult, error
 	serverResult := task.NewServerResult(serverTask)
 	ctx, _ := context.WithTimeout(context.Background(), e.config.ExecuteTime)
 	results, err := e.scheduler.Execute(ctx, serverTask.Tasks)
+	serverResult.Results = results
 	if err != nil {
 		return serverResult, err
 	}
-	serverResult.Results = results
 	return serverResult, nil
 }
 
