@@ -92,6 +92,7 @@ func (e *Engine) startServer() error {
 	if executeErr != nil {
 		if result != nil {
 			result.Error = executeErr.Error()
+			result.StatusCode = task.CHECK_ERROR
 		}
 	}
 	return e.config.Consumer.DestroyServerResult(result)
