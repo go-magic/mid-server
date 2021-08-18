@@ -3,8 +3,6 @@ package schedule
 import (
 	"context"
 	"errors"
-	"sync"
-
 	"github.com/go-magic/mid-server/dispatcher"
 	"github.com/go-magic/mid-server/register"
 	"github.com/go-magic/mid-server/task"
@@ -34,24 +32,16 @@ func NewSchedule(r register.Register, dis dispatcher.Dispatcher) *schedule {
 
 func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Result, error) {
 	results := make([]task.Result, 0, len(subTasks))
-	group := sync.WaitGroup{}
-	checkoutChan := make(chan struct{}, len(subTasks))
-	resultChan := make(chan task.CheckResult)
-	group.Add(len(subTasks))
+	resultChan := make(chan task.CheckResult, len(subTasks))
 	go s.checkResults(subTasks, resultChan)
-	go func() {
-		group.Wait()
-		checkoutChan <- struct{}{}
-	}()
 	for {
 		select {
 		case result := <-resultChan:
 			results = append(results, *result.SubResult)
-			group.Done()
-		case <-checkoutChan:
-			return results, nil
+			if len(results) == len(subTasks) {
+				return results, nil
+			}
 		case <-ctx.Done():
-			group.Done()
 			return results, errors.New("time out")
 		}
 	}
