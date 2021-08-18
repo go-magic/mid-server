@@ -35,7 +35,7 @@ func NewSchedule(r register.Register, dis dispatcher.Dispatcher) *schedule {
 func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Result, error) {
 	results := make([]task.Result, 0, len(subTasks))
 	group := sync.WaitGroup{}
-	checkoutChan := make(chan struct{})
+	checkoutChan := make(chan struct{}, len(subTasks))
 	resultChan := make(chan task.CheckResult)
 	group.Add(len(subTasks))
 	go s.checkResults(subTasks, resultChan)
@@ -51,6 +51,7 @@ func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Res
 		case <-checkoutChan:
 			return results, nil
 		case <-ctx.Done():
+			group.Done()
 			return results, errors.New("time out")
 		}
 	}
