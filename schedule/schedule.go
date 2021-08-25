@@ -32,6 +32,9 @@ func NewSchedule(r register.Register, dis dispatcher.Dispatcher) *schedule {
 
 func (s schedule) Execute(ctx context.Context, subTasks []task.Task) ([]task.Result, error) {
 	results := make([]task.Result, 0, len(subTasks))
+	if len(subTasks) == 0 {
+		return results, nil
+	}
 	resultChan := make(chan task.CheckResult, len(subTasks))
 	go s.checkResults(subTasks, resultChan)
 	for {
