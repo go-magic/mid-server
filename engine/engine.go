@@ -14,6 +14,7 @@ type Engine struct {
 	config    Config
 	scheduler schedule.Scheduler
 	exit      chan struct{}
+	parser    ErrorParser
 }
 
 var (
@@ -41,6 +42,10 @@ func (e *Engine) SetScheduler(scheduler schedule.Scheduler) {
 	e.scheduler = scheduler
 }
 
+func (e *Engine) SetParser(parser ErrorParser) {
+	e.parser = parser
+}
+
 /*
 SetConfig 设置engine配置文件
 */
@@ -51,11 +56,9 @@ func (e *Engine) SetConfig(config Config) {
 func (e *Engine) start() {
 	for {
 		err := e.startServer()
-		if err != nil {
-			time.Sleep(e.config.ErrorWaitTime)
-			continue
+		if e.parser != nil {
+			e.parser.Parser(err)
 		}
-		time.Sleep(e.config.SuccessWaitTime)
 	}
 }
 
@@ -67,12 +70,6 @@ func (e *Engine) init() error {
 		e.config.Producer == nil ||
 		e.config.Consumer == nil {
 		return errors.New("args error")
-	}
-	if e.config.ErrorWaitTime == 0 {
-		e.config.ErrorWaitTime = time.Second * 60
-	}
-	if e.config.SuccessWaitTime == 0 {
-		e.config.SuccessWaitTime = time.Second * 60
 	}
 	if e.config.ExecuteTime == 0 {
 		e.config.ExecuteTime = time.Second * 60

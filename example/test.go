@@ -65,12 +65,17 @@ func initEngineConfig() engine.Config {
 	producer := NewCreate()
 	consumer := NewDestroy()
 	c := engine.Config{}
-	c.ErrorWaitTime = time.Second * 1
-	c.SuccessWaitTime = time.Second * 1
 	c.ExecuteTime = time.Second * 1
 	c.Producer = producer
 	c.Consumer = consumer
 	return c
+}
+
+type DefaultParser struct {
+}
+
+func (d DefaultParser) Parser(err error) {
+
 }
 
 /*
@@ -79,6 +84,7 @@ func initEngineConfig() engine.Config {
 func initEngine(scheduler schedule.Scheduler) error {
 	engine.GetEngineInstance().SetScheduler(scheduler)
 	engine.GetEngineInstance().SetConfig(initEngineConfig())
+	engine.GetEngineInstance().SetParser(DefaultParser{})
 	return nil
 }
 

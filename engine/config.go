@@ -8,9 +8,11 @@ import (
 Config engine配置
 */
 type Config struct {
-	SuccessWaitTime time.Duration
-	ErrorWaitTime   time.Duration
-	ExecuteTime     time.Duration
-	Producer        Producer
-	Consumer        Consumer
+	ExecuteTime time.Duration
+	Producer    Producer
+	Consumer    Consumer
+}
+
+type ErrorParser interface {
+	Parser(err error)
 }
