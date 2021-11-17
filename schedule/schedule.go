@@ -17,14 +17,15 @@ type schedule struct {
 	dis dispatcher.Dispatcher
 }
 
-func NewSchedule(r register.Register, dis dispatcher.Dispatcher) *schedule {
+func NewSchedule(r register.Register, dis dispatcher.Dispatcher) schedule {
+	s := schedule{}
 	if r == nil {
-		return nil
+		s.register = register.NewRegisterCenter()
+		return s
 	}
 	if dis == nil {
 		dis = &dispatcher.Dispatch{}
 	}
-	s := &schedule{}
 	s.dis = dis
 	s.register = r
 	return s
