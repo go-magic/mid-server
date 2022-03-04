@@ -14,13 +14,13 @@ const (
 ServerResult 通用多任务结果
 */
 type ServerResult struct {
-	StatusCode int      `json:"status_code"`
+	StatusCode int      `json:"statusCode"`
 	Results    []Result `json:"results"`
 	Tasks      []Task   `json:"tasks"`
-	TaskID     string   `json:"task_id"`
+	TaskID     string   `json:"taskId"`
 	Error      string   `json:"error"`
-	ExecTime   string   `json:"exec_time"`
-	FinishTime string   `json:"finish_time"`
+	ExecTime   string   `json:"execTime"`
+	FinishTime string   `json:"finishTime"`
 }
 
 /*
@@ -28,10 +28,10 @@ Result 通用单任务结果
 */
 type Result struct {
 	SubResultCode int    `json:"code"`
-	TaskType      int    `json:"task_type"`
-	SubResult     string `json:"sub_result"`
-	SubTask       string `json:"sub_task"`
-	SubTaskID     string `json:"sub_task_id"`
+	TaskType      int    `json:"taskType"`
+	SubResult     string `json:"subResult"`
+	SubTask       string `json:"subTask"`
+	SubTaskID     string `json:"subTaskId"`
 	Error         string `json:"error"`
 }
 
